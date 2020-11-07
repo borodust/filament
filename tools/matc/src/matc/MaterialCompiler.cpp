@@ -282,7 +282,6 @@ bool MaterialCompiler::run(const Config& config) {
     // Set the root include directory to the directory containing the material file.
     DirIncluder includer;
     utils::Path materialFilePath = utils::Path(input->getName()).getAbsolutePath();
-    assert(materialFilePath.isFile());
     includer.setIncludeDirectory(materialFilePath.getParent());
 
     builder
