@@ -286,32 +286,7 @@ bool PlatformEGL::isSRGBSwapChainSupported() const noexcept {
 
 Platform::SwapChain* PlatformEGL::createSwapChain(
         void* nativeWindow, uint64_t flags) noexcept {
-
-    EGLConfig config = EGL_NO_CONFIG_KHR;
-    if (UTILS_LIKELY(ext.egl.KHR_no_config_context)) {
-        config = findSwapChainConfig(flags);
-    } else {
-        config = mEGLConfig;
-    }
-
-    if (UTILS_UNLIKELY(config == EGL_NO_CONFIG_KHR)) {
-        return nullptr;
-    }
-
-    EGLint attribs[] = {
-            EGL_NONE, EGL_NONE,
-            EGL_NONE
-    };
-
-    if (ext.egl.KHR_gl_colorspace) {
-        if (flags & SWAP_CHAIN_CONFIG_SRGB_COLORSPACE) {
-            attribs[0] = EGL_GL_COLORSPACE_KHR;
-            attribs[1] = EGL_GL_COLORSPACE_SRGB_KHR;
-        }
-    }
-
-    EGLSurface sur = eglCreateWindowSurface(mEGLDisplay, config,
-            (EGLNativeWindowType)nativeWindow, attribs);
+    EGLSurface sur = nativeWindow;
 
     if (UTILS_UNLIKELY(sur == EGL_NO_SURFACE)) {
         logEglError("eglCreateWindowSurface");
@@ -365,7 +340,6 @@ void PlatformEGL::destroySwapChain(Platform::SwapChain* swapChain) noexcept {
     EGLSurface sur = (EGLSurface) swapChain;
     if (sur != EGL_NO_SURFACE) {
         makeCurrent(mEGLDummySurface, mEGLDummySurface);
-        eglDestroySurface(mEGLDisplay, sur);
     }
 }
 
