@@ -258,10 +258,7 @@ void PlatformEGL::terminate() noexcept {
 
 Platform::SwapChain* PlatformEGL::createSwapChain(
         void* nativeWindow, uint64_t& flags) noexcept {
-    EGLSurface sur = eglCreateWindowSurface(mEGLDisplay,
-            (flags & backend::SWAP_CHAIN_CONFIG_TRANSPARENT) ?
-            mEGLTransparentConfig : mEGLConfig,
-            (EGLNativeWindowType)nativeWindow, nullptr);
+    EGLSurface sur = nativeWindow;
 
     if (UTILS_UNLIKELY(sur == EGL_NO_SURFACE)) {
         logEglError("eglCreateWindowSurface");
@@ -298,7 +295,6 @@ void PlatformEGL::destroySwapChain(Platform::SwapChain* swapChain) noexcept {
     EGLSurface sur = (EGLSurface) swapChain;
     if (sur != EGL_NO_SURFACE) {
         makeCurrent(mEGLDummySurface, mEGLDummySurface);
-        eglDestroySurface(mEGLDisplay, sur);
     }
 }
 
