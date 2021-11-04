@@ -439,6 +439,12 @@ else()
     option(FILAMENT_BUILD_FILAMAT "Build filamat and JNI buildings" OFF)
 endif()
 
+if (IS_HOST_PLATFORM)
+  option(FILAMENT_BUILD_MATC "Build matc" ON)
+else()
+  option(FILAMENT_BUILD_MATC "Build matc" OFF)
+endif()
+
 # By default, link in matdbg for Desktop + Debug only since it pulls in filamat and a web server.
 if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND IS_HOST_PLATFORM)
     option(FILAMENT_ENABLE_MATDBG "Enable the material debugger" ON)
@@ -717,7 +723,6 @@ if (IS_HOST_PLATFORM)
     add_subdirectory(${TOOLS}/cso-lut)
     add_subdirectory(${TOOLS}/filamesh)
     add_subdirectory(${TOOLS}/glslminifier)
-    add_subdirectory(${TOOLS}/matc)
     add_subdirectory(${TOOLS}/matinfo)
     add_subdirectory(${TOOLS}/mipgen)
     add_subdirectory(${TOOLS}/normal-blending)
@@ -726,6 +731,11 @@ if (IS_HOST_PLATFORM)
     add_subdirectory(${TOOLS}/roughness-prefilter)
     add_subdirectory(${TOOLS}/specular-color)
 endif()
+
+if (FILAMENT_BUILD_MATC AND (FILAMENT_BUILD_FILAMAT OR IS_HOST_PLATFORM))
+  add_subdirectory(${TOOLS}/matc)
+endif()
+
 
 # Generate exported executables for cross-compiled builds (Android, WebGL, and iOS)
 if (NOT CMAKE_CROSSCOMPILING)
